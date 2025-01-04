@@ -7,7 +7,7 @@ export class AuthController {
   constructor (private readonly authServices: AuthService) {}
 
   @Post()
-  async getToken(@Body('accessCode') accessCode: string, @Res() res: Response) {
+  async login(@Body('accessCode') accessCode: string, @Res() res: Response) {
     const token = await this.authServices.verifyAccessCode(accessCode);
 
     const cookieOptions = {
@@ -18,6 +18,6 @@ export class AuthController {
 
     res.cookie('authToken', token, cookieOptions);
 
-    return res.json({ message: 'Login successful' });
+    return res.status(200).json({ message: 'Login successful' });
   }
 }
