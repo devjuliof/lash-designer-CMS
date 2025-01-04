@@ -1,5 +1,4 @@
 type InputProps = {
-  text: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
