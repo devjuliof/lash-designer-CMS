@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException,  Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -9,10 +9,11 @@ export class AuthService {
     const isAccessCodeValid = accessCode === process.env.ACCESS_CODE;
 
     if (!isAccessCodeValid) {
-      throw new HttpException('Access code incorrect.', HttpStatus.BAD_REQUEST);
+      throw new BadRequestException('Access code is incorrect.');
     }
 
-    const payload = {};
-    return await this.jwtService.signAsync(payload);
+    const token = await this.jwtService.signAsync({});
+
+    return token;
   }
 }
