@@ -10,9 +10,9 @@ export class AuthService {
   ) {}
 
   public async verifyAccessCode(accessCode: string) {
-    console.log(accessCode);
-    const isAccessCodeValid =
-      accessCode === this.configService.get<string>('ACCESS_CODE');
+    const ACESS_CODE = this.configService.get<string>('ACCESS_CODE');
+
+    const isAccessCodeValid = accessCode === ACESS_CODE;
 
     if (!isAccessCodeValid) {
       throw new BadRequestException('Access code is incorrect.');

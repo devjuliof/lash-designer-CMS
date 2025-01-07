@@ -7,8 +7,6 @@ import { ClientModule } from './clients/client.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
-import { Client } from './clients/entities/client.entity';
-import { AnamnesisForm } from './clients/entities/anamnesis-form.entity';
 
 const ENV = process.env.NODE_ENV;
 
@@ -26,14 +24,13 @@ const ENV = process.env.NODE_ENV;
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
+        autoLoadEntities: configService.get('database.autoLoadEntities'),
         synchronize: configService.get('database.synchronize'),
         port: +configService.get('database.port'),
         username: configService.get('database.user'),
         password: configService.get('database.password'),
         host: configService.get('database.host'),
         database: configService.get('database.name'),
-        autoLoadEntities: configService.get('database.autoLoadEntities'),
-        entities: [Client, AnamnesisForm],
       }),
     }),
   ],

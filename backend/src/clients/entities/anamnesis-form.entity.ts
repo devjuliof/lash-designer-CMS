@@ -6,9 +6,6 @@ export class AnamnesisForm {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Client, (client) => client.anamnesisForm) // One-to-one relationshi
-  client: Client;
-
   @Column({
     type: 'boolean',
     nullable: true,
@@ -33,4 +30,7 @@ export class AnamnesisForm {
     nullable: true,
   })
   conjuntivite: boolean; // Question: "Conjuntivite?"
+
+  @OneToOne(() => Client, (client) => client.anamnesisForm)
+  client: Client;
 }
