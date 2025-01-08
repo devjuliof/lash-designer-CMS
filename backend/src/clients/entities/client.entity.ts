@@ -39,7 +39,9 @@ export class Client {
   })
   email: string;
 
-  @OneToOne(() => AnamnesisForm, (anamnesisForm) => anamnesisForm.client)
-  @JoinColumn({ name: 'anamnesisForm_id' })
+  @OneToOne(() => AnamnesisForm, (anamnesisForm) => anamnesisForm.client, {
+    cascade: true,
+  })
+  @JoinColumn()
   anamnesisForm: AnamnesisForm;
 }
