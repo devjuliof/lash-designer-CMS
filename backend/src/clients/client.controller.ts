@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { CreateClientDto } from './dtos/create-client.dto';
 import { ClientService } from './providers/clients.service';
+import { CreateAnamnesisFormDto } from './dtos/create-anamnesis-form.dto';
 
 @Controller('clients')
 export class ClientController {
@@ -21,5 +22,12 @@ export class ClientController {
   @Delete()
   public delete(@Query('id', ParseIntPipe) id: number) {
     return this.clientService.deleteClient(id);
+  }
+
+  @Post('anamnesis-form')
+  public createAnamnesisForm(
+    @Body() createAnamnesisFormDto: CreateAnamnesisFormDto,
+  ) {
+    return this.clientService.createAnamnesisForm(createAnamnesisFormDto);
   }
 }
