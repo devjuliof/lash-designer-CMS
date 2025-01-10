@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   ParseIntPipe,
   Post,
   Query,
@@ -9,6 +10,7 @@ import {
 import { CreateClientDto } from './dtos/create-client.dto';
 import { ClientService } from './providers/clients.service';
 import { CreateAnamnesisFormDto } from './dtos/create-anamnesis-form.dto';
+import { PaginationQueryDto } from 'src/shared/pagination/dtos/pagination-query.dto';
 
 @Controller('clients')
 export class ClientController {
@@ -29,5 +31,10 @@ export class ClientController {
     @Body() createAnamnesisFormDto: CreateAnamnesisFormDto,
   ) {
     return this.clientService.createAnamnesisForm(createAnamnesisFormDto);
+  }
+
+  @Get()
+  public getAllClients(@Query() paginationQueryDto: PaginationQueryDto) {
+    return this.clientService.getAllClients(paginationQueryDto);
   }
 }

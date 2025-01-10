@@ -4,10 +4,14 @@ import { ClientService } from './providers/clients.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Client } from './entities/client.entity';
 import { AnamnesisForm } from './entities/anamnesis-form.entity';
+import { PaginationModule } from 'src/shared/pagination/pagination.module';
 
 @Module({
   controllers: [ClientController],
   providers: [ClientService],
-  imports: [TypeOrmModule.forFeature([Client, AnamnesisForm])],
+  imports: [
+    PaginationModule,
+    TypeOrmModule.forFeature([Client, AnamnesisForm]),
+  ],
 })
 export class ClientModule {}

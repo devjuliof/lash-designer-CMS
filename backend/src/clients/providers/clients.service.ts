@@ -11,6 +11,8 @@ import { Client } from '../entities/client.entity';
 import { Repository } from 'typeorm';
 import { CreateAnamnesisFormDto } from '../dtos/create-anamnesis-form.dto';
 import { AnamnesisForm } from '../entities/anamnesis-form.entity';
+import { PaginationQueryDto } from 'src/shared/pagination/dtos/pagination-query.dto';
+import { PaginationProvider } from 'src/shared/pagination/providers/pagination.provider';
 
 @Injectable()
 export class ClientService {
@@ -20,6 +22,8 @@ export class ClientService {
 
     @InjectRepository(AnamnesisForm)
     private readonly anamnesisFormRepository: Repository<AnamnesisForm>,
+
+    private readonly paginationProvider: PaginationProvider,
   ) {}
 
   public async createClient(createClientDto: CreateClientDto) {
@@ -105,5 +109,12 @@ export class ClientService {
     }
 
     return newAnamnesisForm;
+  }
+
+  public async getAllClients(paginationQueryDto: PaginationQueryDto) {
+    return await this.paginationProvider.paginateQuery(
+      paginationQueryDto,
+      this.clientRepository,
+    );
   }
 }
