@@ -124,13 +124,21 @@ export class ClientService {
     searchClientsByNameDto: SearchClientsByNameDto,
     paginationQueryDto: PaginationQueryDto,
   ) {
-    const results = await this.paginationProvider.paginateQuery(
-      paginationQueryDto,
-      this.clientRepository,
-      {
-        name: Like(`${searchClientsByNameDto.name}%`),
-      },
-    );
+    let results = undefined;
+
+    try {
+      results = await this.paginationProvider.paginateQuery(
+        paginationQueryDto,
+        this.clientRepository,
+        {
+          name: Like(`${searchClientsByNameDto.name}%`),
+        },
+      );
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'An unexpected error occurred. Please try again later.',
+      );
+    }
 
     return results;
   }
