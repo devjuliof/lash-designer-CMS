@@ -11,6 +11,7 @@ import { CreateClientDto } from './dtos/create-client.dto';
 import { ClientService } from './providers/clients.service';
 import { CreateAnamnesisFormDto } from './dtos/create-anamnesis-form.dto';
 import { PaginationQueryDto } from 'src/shared/pagination/dtos/pagination-query.dto';
+import { SearchClientsByNameDto } from './dtos/search-clients-by-name.dto';
 
 @Controller('clients')
 export class ClientController {
@@ -36,5 +37,16 @@ export class ClientController {
   @Get()
   public getAllClients(@Query() paginationQueryDto: PaginationQueryDto) {
     return this.clientService.getAllClients(paginationQueryDto);
+  }
+
+  @Get('search-clients')
+  public async searchClientsByName(
+    @Query() searchClientsByNameDto: SearchClientsByNameDto,
+    @Query() paginationQueryDto: PaginationQueryDto,
+  ) {
+    return this.clientService.searchClientsByName(
+      searchClientsByNameDto,
+      paginationQueryDto,
+    );
   }
 }
