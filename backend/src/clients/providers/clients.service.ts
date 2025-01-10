@@ -1,6 +1,8 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
+  NotFoundException,
   RequestTimeoutException,
 } from '@nestjs/common';
 import { CreateClientDto } from '../dtos/create-client.dto';
@@ -64,23 +66,44 @@ export class ClientService {
   public async createAnamnesisForm(
     createAnamnesisFormDto: CreateAnamnesisFormDto,
   ) {
-    // You need handle with exceptions
-    const client = await this.clientRepository.findOneBy({
-      id: createAnamnesisFormDto.clientId,
-    });
+    let client = undefined;
 
-    const newAnamnsesisForm = this.anamnesisFormRepository.create(
+    try {
+      client = await this.clientRepository.findOneBy({
+        id: createAnamnesisFormDto.clientId,
+      });
+
+      if (!client) {
+        throw new NotFoundException('Client not found');
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Error retrieving client: ${error.message}`,
+      );
+    }
+
+    const newAnamnesisForm = this.anamnesisFormRepository.create(
       createAnamnesisFormDto,
     );
 
-    client.anamnesisForm = newAnamnsesisForm;
+    client.anamnesisForm = newAnamnesisForm;
 
-    await this.anamnesisFormRepository.save({
-      ...newAnamnsesisForm,
-    });
+    try {
+      await this.anamnesisFormRepository.save(newAnamnesisForm);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Error saving anamnesis form: ${error.message}`,
+      );
+    }
 
-    await this.clientRepository.save(client);
+    try {
+      await this.clientRepository.save(client);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Error updating client with anamnesis form: ${error.message}`,
+      );
+    }
 
-    return newAnamnsesisForm;
+    return newAnamnesisForm;
   }
 }
