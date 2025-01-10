@@ -231,7 +231,9 @@ export class AnamnesisForm {
   })
   alergiaEsmaltes: boolean; // "Tem alergia a esmaltes?"
 
-  @OneToOne(() => Client, (client) => client.anamnesisForm)
+  @OneToOne(() => Client, (client) => client.anamnesisForm, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   client: Client;
 }

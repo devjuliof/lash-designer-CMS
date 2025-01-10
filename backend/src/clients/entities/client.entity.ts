@@ -41,7 +41,6 @@ export class Client {
 
   @OneToOne(() => AnamnesisForm, (anamnesisForm) => anamnesisForm.client, {
     cascade: true,
-    onDelete: 'CASCADE',
   })
   anamnesisForm: AnamnesisForm;
 }
