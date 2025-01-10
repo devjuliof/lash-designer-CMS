@@ -41,7 +41,7 @@ export class Client {
 
   @OneToOne(() => AnamnesisForm, (anamnesisForm) => anamnesisForm.client, {
     cascade: true,
+    onDelete: 'CASCADE',
   })
-  @JoinColumn()
   anamnesisForm: AnamnesisForm;
 }
