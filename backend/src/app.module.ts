@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientModule } from './clients/client.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PaginationModule } from './shared/pagination/pagination.module';
+import { RevenueModule } from './revenue/revenue.module';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 
@@ -35,6 +36,7 @@ const ENV = process.env.NODE_ENV;
       }),
     }),
     PaginationModule,
+    RevenueModule,
   ],
   controllers: [AppController],
   providers: [AppService],
