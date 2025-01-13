@@ -12,52 +12,72 @@ export class RevenueService {
   ) {}
 
   public async addRevenue(addRevenueDto: AddRevenueDto) {
-
     const revenue = this.revenueRepository.create(addRevenueDto);
 
-    return await this.revenueRepository.save(revenue);
+    let response;
+    try {
+      response = await this.revenueRepository.save(revenue);
+    } catch (error) {
+      throw new Error('Failed to save revenue.');
+    }
+
+    return response;
   }
 
   public async getRevenueData() {
-    
     const revenueSinceSevenDays = await this.getRevenueSinceDays(7);
-    
+
     const revenueSinceFifteenDays = await this.getRevenueSinceDays(15);
 
     const revenueSinceThirtyDays = await this.getRevenueSinceDays(30);
+
+    const rawRevenueMonthlyResults = await this.revenueRepository
+      .createQueryBuilder('revenue')
+      .select("TO_CHAR(revenue.date, 'Month')", 'month')
+      .addSelect('SUM(revenue.value)', 'total')
+      .groupBy("TO_CHAR(revenue.date, 'Month')")
+      .orderBy('MIN(revenue.date)', 'ASC')
+      .getRawMany();
+
+    const monthlyRevenue = rawRevenueMonthlyResults.reduce((acc, item) => {
+      const month = item.month.toLowerCase().trim();
+      acc[month] = parseFloat(item.total);
+      return acc;
+    }, {});
 
     const results = {
       revenuesPerDays: {
         revenueSinceSevenDays,
         revenueSinceFifteenDays,
-        revenueSinceThirtyDays
+        revenueSinceThirtyDays,
       },
-      revenuesMonthly: {
-        // I still need work here
-      }
-    }
+      monthlyRevenue,
+      // I still need divide by year
+    };
 
     return results;
   }
 
   private async getRevenueSinceDays(days: number) {
-    const date = new Date()
-
-    date.setHours(date.getHours() - (days * 24));
-
-    const dateLessDays = date;
+    const dateLessDays = new Date();
+    dateLessDays.setDate(dateLessDays.getDate() - days);
 
     const results = await this.revenueRepository.find({
       select: {
         value: true,
       },
       where: {
-        date: MoreThan(dateLessDays)
-      }
-    })
+        date: MoreThan(dateLessDays),
+      },
+    });
 
-    const total = results.reduce((sum, record) => sum + Number(record.value), 0);
+    const total = results.reduce(
+      (sum, record) => sum + Number(record.value),
+      0,
+    );
 
-    return total;
+    const formattedTotal = total.toFixed(2);
+
+    return formattedTotal;
   }
 }
