@@ -31,19 +31,44 @@ export class RevenueService {
 
     const revenueSinceThirtyDays = await this.getRevenueSinceDays(30);
 
-    const rawRevenueMonthlyResults = await this.revenueRepository
+    const rawRevenueResults = await this.revenueRepository
       .createQueryBuilder('revenue')
-      .select("TO_CHAR(revenue.date, 'Month')", 'month')
-      .addSelect('SUM(revenue.value)', 'total')
-      .groupBy("TO_CHAR(revenue.date, 'Month')")
-      .orderBy('MIN(revenue.date)', 'ASC')
+      .select('EXTRACT(YEAR from date)', 'year')
+      .addSelect('SUM(revenue.value)', 'total_revenue')
+      .addSelect(this.generateMonthlyRevenueSelects())
+      .groupBy('EXTRACT(YEAR FROM date)')
       .getRawMany();
 
-    const monthlyRevenue = rawRevenueMonthlyResults.reduce((acc, item) => {
-      const month = item.month.toLowerCase().trim();
-      acc[month] = parseFloat(item.total);
-      return acc;
-    }, {});
+    const months = [
+      'january',
+      'february',
+      'march',
+      'april',
+      'may',
+      'june',
+      'july',
+      'august',
+      'september',
+      'october',
+      'november',
+      'december',
+    ];
+
+    const revenuePerYear = rawRevenueResults.map((result) => {
+      const year = result.year;
+      const totalRevenue = result.total_revenue;
+
+      const revenuePerMonth = months.reduce((acc, month) => {
+        acc[`${month}Revenue`] = result[`${month}_revenue`];
+        return acc;
+      }, {});
+
+      return {
+        year,
+        totalRevenue,
+        revenuePerMonth,
+      };
+    });
 
     const results = {
       revenuesPerDays: {
@@ -51,8 +76,7 @@ export class RevenueService {
         revenueSinceFifteenDays,
         revenueSinceThirtyDays,
       },
-      monthlyRevenue,
-      // I still need divide by year
+      revenuePerYear,
     };
 
     return results;
@@ -79,5 +103,29 @@ export class RevenueService {
     const formattedTotal = total.toFixed(2);
 
     return formattedTotal;
+  }
+
+  private generateMonthlyRevenueSelects() {
+    const months = [
+      'january',
+      'february',
+      'march',
+      'april',
+      'may',
+      'june',
+      'july',
+      'august',
+      'september',
+      'october',
+      'november',
+      'december',
+    ];
+
+    return months
+      .map(
+        (month, index) =>
+          `SUM(CASE WHEN EXTRACT(MONTH FROM date) = ${index + 1} THEN value ELSE 0 END) AS ${month}_revenue`,
+      )
+      .join(', ');
   }
 }
