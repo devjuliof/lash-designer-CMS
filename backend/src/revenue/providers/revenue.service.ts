@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AddRevenueDto } from './../dtos/revenue.dto';
-import { LessThan, MoreThan, Repository, TreeLevelColumn } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { Revenue } from '../entities/revenue.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
