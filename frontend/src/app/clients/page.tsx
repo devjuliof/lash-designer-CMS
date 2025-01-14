@@ -3,16 +3,18 @@
 import React from "react";
 import MenuMobile from "../shared/components/MenuMobile";
 import SearchInput from "./components/SearchInput";
-import PurpleButton from "./components/PurpleButton";
 import ClientProfile from "./components/ClientProfile";
 import { ClientsService } from "./services/clientsService";
 import { ClientInterface } from "./interfaces/client.interface";
 import PaginationFooter from "./components/PaginationFooter";
+import RegisterClientModal from "./components/RegisterClientModal";
+import AddButton from "./components/AddButton";
 
 export default function ClientsPage() {
   const [isFocused, setIsFocused] = React.useState(false);
   const [clients, setClients] = React.useState<ClientInterface | undefined>();
   const [inputSearch, setInputSearch] = React.useState<string>('');
+  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
 
   const debounceTimer = React.useRef<NodeJS.Timeout | null>(null);
 
@@ -59,7 +61,7 @@ export default function ClientsPage() {
       >
         <div className="flex gap-4 px-2 items-center">
           <SearchInput isFocused={isFocused} setIsFocused={setIsFocused} setInputSearch={setInputSearch}/>
-          <PurpleButton text={'+'} />
+          <AddButton text={'+'} onClick={() => setIsModalOpen((prev) => !prev)}/>
         </div>
   
         <section className="px-2 mt-6 flex flex-col gap-4">
@@ -73,6 +75,8 @@ export default function ClientsPage() {
       <div className="w-full px-2 flex justify-center mb-6">
         <PaginationFooter />
       </div>
+
+    {isModalOpen && <RegisterClientModal isOpen={isModalOpen} closeModal={() => setIsModalOpen(false)}/>}
     </div>
   );  
 }
