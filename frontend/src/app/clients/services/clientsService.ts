@@ -24,4 +24,10 @@ export class ClientsService {
 
     return response;
   }
+
+  public static async deleteClient(id: number) {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/?id=${id}`).then(res => res.json());
+
+    return response;
+  }
 }
