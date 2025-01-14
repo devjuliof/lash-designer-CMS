@@ -61,7 +61,7 @@ export default function ClientsPage() {
       >
         <div className="flex gap-4 px-2 items-center">
           <SearchInput isFocused={isFocused} setIsFocused={setIsFocused} setInputSearch={setInputSearch}/>
-          <AddButton text={'+'} onClick={() => setIsModalOpen((prev) => !prev)}/>
+          <AddButton onClick={() => setIsModalOpen((prev) => !prev)}/>
         </div>
   
         <section className="px-2 mt-6 flex flex-col gap-4">
