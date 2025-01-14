@@ -43,6 +43,17 @@ export default function ClientsPage() {
       }
     };
   }, [inputSearch]);
+  
+  async function deleteClient(id: number) {
+    await ClientsService.deleteClient(id);
+
+    updateClientsPage()
+  }
+
+  async function updateClientsPage() {
+    const results = await ClientsService.getAllClients();
+    setClients(results.data);
+  }
 
   return (
     <div className="relative min-h-screen flex flex-col">
@@ -67,7 +78,7 @@ export default function ClientsPage() {
         <section className="px-2 mt-6 flex flex-col gap-4">
           {clients &&
             clients.map((client: ClientInterface) => (
-              <ClientProfile key={client.id} name={client.name} />
+              <ClientProfile key={client.id} name={client.name} onClickForm={() => {}} onClickProfile={() => {}} onClickTrash={() => deleteClient(client.id)} />
             ))}
         </section>
       </div>
