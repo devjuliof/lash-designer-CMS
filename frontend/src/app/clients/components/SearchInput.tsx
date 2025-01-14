@@ -5,9 +5,11 @@ import Image from "next/image";
 export default function SearchInput({
   isFocused,
   setIsFocused,
+  setInputSearch,
 }: {
   isFocused: boolean;
   setIsFocused: (state: boolean) => void;
+  setInputSearch: (state: string) => void;
 }) {
   return (
     <div className="relative w-full">
@@ -28,6 +30,7 @@ export default function SearchInput({
         type="text"
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputSearch(e.target.value)}
       />
     </div>
   );
