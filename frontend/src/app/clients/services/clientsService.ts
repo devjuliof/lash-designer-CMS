@@ -4,4 +4,10 @@ export class ClientsService {
     
     return results;
   }
+
+  public static async getSearchClientsByName(inputText: string) {
+    const results = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/search-clients/?name=${inputText}`).then(res => res.json());
+
+    return results;
+  }
 }
