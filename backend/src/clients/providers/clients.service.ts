@@ -42,7 +42,11 @@ export class ClientService {
       );
     }
 
-    return newClient;
+    const response = {
+      created: true,
+      client: newClient
+    }
+    return response;
   }
 
   public async deleteClient(id: number) {
