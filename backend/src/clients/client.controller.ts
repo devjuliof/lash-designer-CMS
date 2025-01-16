@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   ParseIntPipe,
   Post,
   Query,
@@ -48,5 +49,10 @@ export class ClientController {
       searchClientsByNameDto,
       paginationQueryDto,
     );
+  }
+
+  @Get(':id')
+  public async getClientById(@Param('id') id: number) {
+    return this.clientService.getClientById(id);
   }
 }
