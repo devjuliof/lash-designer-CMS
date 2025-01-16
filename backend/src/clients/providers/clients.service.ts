@@ -8,13 +8,12 @@ import {
 import { CreateClientDto } from '../dtos/create-client.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from '../entities/client.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { CreateAnamnesisFormDto } from '../dtos/create-anamnesis-form.dto';
 import { AnamnesisForm } from '../entities/anamnesis-form.entity';
 import { PaginationQueryDto } from 'src/shared/pagination/dtos/pagination-query.dto';
 import { PaginationProvider } from 'src/shared/pagination/providers/pagination.provider';
 import { SearchClientsByNameDto } from '../dtos/search-clients-by-name.dto';
-import { Like } from 'typeorm';
 
 @Injectable()
 export class ClientService {
@@ -44,8 +43,8 @@ export class ClientService {
 
     const response = {
       created: true,
-      client: newClient
-    }
+      client: newClient,
+    };
     return response;
   }
 
@@ -135,7 +134,7 @@ export class ClientService {
         paginationQueryDto,
         this.clientRepository,
         {
-          name: Like(`${searchClientsByNameDto.name}%`),
+          name: ILike(`${searchClientsByNameDto.name.toLowerCase()}%`),
         },
       );
     } catch (error) {
