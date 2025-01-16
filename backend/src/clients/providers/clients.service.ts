@@ -145,4 +145,20 @@ export class ClientService {
 
     return results;
   }
+
+  public async getClientById(id: number) {
+    let client = undefined;
+    try {
+      client = await this.clientRepository.findOneBy({ id });
+
+      console.log(client)
+      if (!client) {
+        throw new BadRequestException(`Client with ID ${id} not found.`);
+      }
+    } catch(error) {
+      throw new Error(`Unable to find the client: ${error.message}`);
+    }
+    
+    return client;
+  }
 }
