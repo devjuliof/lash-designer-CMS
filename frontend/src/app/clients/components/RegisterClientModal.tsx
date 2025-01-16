@@ -37,6 +37,11 @@ export default function RegisterClientModal({
   };
 
   async function registerClient() {
+    if (!clientData.name || !clientData.aniversario || !clientData.telefone || !clientData.email) {
+      setErrors(['Todos os campos são obrigatórios.'])
+      return;
+    }
+
     const response = await ClientsService.registerClient(clientData);
     if (response.created) {
       closeModal();
@@ -58,22 +63,22 @@ export default function RegisterClientModal({
       >
         <div className="flex flex-col gap-4">
           <InputWithLabel 
-            label={'Nome'} 
+            label={'Nome *'} 
             placeholder={'Cliente'} 
             onChange={handleInputChange('name')} 
           />
           <InputWithLabel 
-            label={'Aniversário'} 
-            placeholder="ex: AAAA-MM-DD" 
+            label={'Aniversário *'} 
+            placeholder="ex: AAAA-MM-DD"
             onChange={handleInputChange('aniversario')} 
           />
           <InputWithLabel 
-            label={'Telefone'} 
+            label={'Telefone *'} 
             placeholder="ex: +35192482843" 
             onChange={handleInputChange('telefone')}
           />
           <InputWithLabel
-            label={'Email'}
+            label={'Email *'}
             placeholder="ex: client@gmail.com"
             onChange={handleInputChange('email')}
           />
