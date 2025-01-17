@@ -1,6 +1,7 @@
 'use client';
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import MenuMobile from "../shared/components/MenuMobile";
 import SearchInput from "./components/SearchInput";
 import ClientProfile from "./components/ClientProfile";
@@ -11,6 +12,8 @@ import RegisterClientModal from "./components/RegisterClientModal";
 import AddButton from "./components/AddButton";
 
 export default function ClientsPage() {
+  const router = useRouter();
+
   const [isFocused, setIsFocused] = React.useState(false);
   const [clients, setClients] = React.useState<ClientInterface | undefined>();
   const [inputSearch, setInputSearch] = React.useState<string>('');
@@ -19,7 +22,7 @@ export default function ClientsPage() {
   const debounceTimer = React.useRef<NodeJS.Timeout | null>(null);
 
   React.useEffect(() => {
-    (async() => {
+    (async () => {
       if (!inputSearch) {
         const results = await ClientsService.getAllClients();
         setClients(results.data);
@@ -43,8 +46,9 @@ export default function ClientsPage() {
       }
     };
   }, [inputSearch]);
-  
+
   async function deleteClient(id: number) {
+    console.log('função chamada')
     await ClientsService.deleteClient(id);
 
     updateClientsPage()
@@ -55,39 +59,41 @@ export default function ClientsPage() {
     setClients(results.data);
   }
 
+  function handleProfileClick(id: number) {
+    router.push(`/clients/profile/${id}`);
+  }
+
   return (
     <div className="relative min-h-screen flex flex-col">
       <div
-        className={`transition-opacity duration-500 ease-in-out ${
-          isFocused ? 'opacity-0 pointer-events-none' : 'opacity-100'
-        }`}
+        className={`transition-opacity duration-500 ease-in-out ${isFocused ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          }`}
       >
         <MenuMobile />
       </div>
-  
+
       <div
-        className={`transition-transform duration-500 ease-in-out ${
-          isFocused ? 'translate-y-[-2.5rem]' : ''
-        } flex-grow`}
+        className={`transition-transform duration-500 ease-in-out ${isFocused ? 'translate-y-[-2.5rem]' : ''
+          } flex-grow`}
       >
         <div className="flex gap-4 px-2 items-center">
-          <SearchInput isFocused={isFocused} setIsFocused={setIsFocused} setInputSearch={setInputSearch}/>
-          <AddButton onClick={() => setIsModalOpen((prev) => !prev)}/>
+          <SearchInput isFocused={isFocused} setIsFocused={setIsFocused} setInputSearch={setInputSearch} />
+          <AddButton onClick={() => setIsModalOpen((prev) => !prev)} />
         </div>
-  
+
         <section className="px-2 mt-6 flex flex-col gap-4">
           {clients &&
             clients.map((client: ClientInterface) => (
-              <ClientProfile key={client.id} name={client.name} onClickForm={() => {}} onClickProfile={() => {}} onClickTrash={() => deleteClient(client.id)} />
+              <ClientProfile key={client.id} name={client.name} onClickForm={() => { }} onClickProfile={() => handleProfileClick(client.id)} onClickTrash={() => deleteClient(client.id)} />
             ))}
         </section>
       </div>
-  
+
       <div className="w-full px-2 flex justify-center mb-6">
         <PaginationFooter />
       </div>
 
-    {isModalOpen && <RegisterClientModal isOpen={isModalOpen} closeModal={() => setIsModalOpen(false)}/>}
+      {isModalOpen && <RegisterClientModal closeModal={() => setIsModalOpen(false)} />}
     </div>
-  );  
+  );
 }
