@@ -10,6 +10,7 @@ import RegisterClientModal from "./RegisterClientModal";
 import SearchInput from "./SearchInput";
 import { ClientsService } from "../services/clientsService";
 import React from "react";
+import { useDebounce } from "../hooks/useDebounce"
 
 export default function ClientsPageContent({ initialClients }: { initialClients: ClientInterface[] }) {
   const router = useRouter();
@@ -19,33 +20,21 @@ export default function ClientsPageContent({ initialClients }: { initialClients:
   const [inputSearch, setInputSearch] = React.useState<string>("");
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
 
-  const debounceTimer = React.useRef<NodeJS.Timeout | null>(null);
+  const debouncedSearch = useDebounce(inputSearch, 300);
 
   React.useEffect(() => {
     (async () => {
-      if (!inputSearch) {
+      if (!debouncedSearch) {
         const results = await ClientsService.getAllClients();
         setClients(results.data);
       }
-    })()
 
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
-    }
-
-    debounceTimer.current = setTimeout(async () => {
-      if (inputSearch) {
-        const results = await ClientsService.getSearchClientsByName(inputSearch);
+      if (debouncedSearch) {
+        const results = await ClientsService.getSearchClientsByName(debouncedSearch);
         setClients(results.data);
       }
-    }, 300);
-
-    return () => {
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current);
-      }
-    };
-  }, [inputSearch]);
+    })()
+  }, [debouncedSearch]);
 
   async function deleteClient(id: number) {
     await ClientsService.deleteClient(id);
