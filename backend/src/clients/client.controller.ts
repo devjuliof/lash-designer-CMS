@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -54,5 +55,13 @@ export class ClientController {
   @Get(':id')
   public async getClientById(@Param('id') id: number) {
     return this.clientService.getClientById(id);
+  }
+
+  @Patch(':id')
+  public async updateClientById(
+    @Param('id') id: number,
+    @Body() newClientData: Partial<CreateClientDto>
+  ) {
+    return this.clientService.updateClientById(id, newClientData);
   }
 }
