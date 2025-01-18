@@ -161,4 +161,20 @@ export class ClientService {
     
     return client;
   }
+
+  public async updateClientById(id: number, newClientData: Partial<CreateClientDto>) {
+    newClientData = this.clientRepository.create(newClientData);
+
+    try {
+      const result = await this.clientRepository.update({ id }, newClientData);
+    console.log(result)
+      if (result.affected === 0) {
+        throw new NotFoundException(`Client with ID ${id} not found`);
+      }
+    } catch (error) {
+      throw new NotFoundException('Failed to update client');
+    }
+
+    return { updated: true };
+  }
 }
