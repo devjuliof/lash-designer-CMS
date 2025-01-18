@@ -12,10 +12,8 @@ interface ClientData {
 }
 
 export default function RegisterClientModal({ 
-  isOpen, 
   closeModal 
 }: {
-  isOpen: true,
   closeModal: () => void;
 }) {
   const [clientData, setClientData] = React.useState<ClientData>({
@@ -26,8 +24,6 @@ export default function RegisterClientModal({
   });
 
   const [errors, setErrors] = React.useState<string[]>([]);
-
-  if (!isOpen) return null;
 
   const handleInputChange = (field: keyof ClientData) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setClientData((prevData) => ({
