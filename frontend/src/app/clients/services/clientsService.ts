@@ -31,4 +31,22 @@ export class ClientsService {
 
     return response;
   }
+
+  public static async getClientById(id: number) {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/${id}`).then(res => res.json());
+
+    return response;
+  }
+
+  public static async updateClientById(id: number, newClientData: ClientData) {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newClientData),
+    }).then(res => res.json());
+
+    return response;
+  }
 }
