@@ -49,6 +49,7 @@ export default function ClientForm({ originalClient }: { originalClient: ClientD
     }
     await ClientsService.updateClientById(client.id, client);
     // send some response to client if works or not
+    setIsDirty(false);
     window.location.reload();
   }
 
