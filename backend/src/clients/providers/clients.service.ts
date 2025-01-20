@@ -9,7 +9,7 @@ import { CreateClientDto } from '../dtos/create-client.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from '../entities/client.entity';
 import { ILike, Repository } from 'typeorm';
-import { CreateAnamnesisFormDto } from '../dtos/create-anamnesis-form.dto';
+import { UpdateAnamnesisFormDto } from '../dtos/update-anamnesis-form.dto';
 import { AnamnesisForm } from '../entities/anamnesis-form.entity';
 import { PaginationQueryDto } from 'src/shared/pagination/dtos/pagination-query.dto';
 import { PaginationProvider } from 'src/shared/pagination/providers/pagination.provider';
@@ -29,6 +29,8 @@ export class ClientService {
 
   public async createClient(createClientDto: CreateClientDto) {
     let newClient = this.clientRepository.create(createClientDto);
+
+    newClient.anamnesisForm = new AnamnesisForm();
 
     try {
       newClient = await this.clientRepository.save(newClient);
@@ -72,48 +74,32 @@ export class ClientService {
     return { deleted: true };
   }
 
-  public async createAnamnesisForm(
-    createAnamnesisFormDto: CreateAnamnesisFormDto,
+  public async updateAnamnesisForm(
+    createAnamnesisFormDto: Partial<UpdateAnamnesisFormDto>,
   ) {
-    let client = undefined;
-
+    let clientId = createAnamnesisFormDto.clientId;
+    let anamnesisForm = undefined;
+  
     try {
-      client = await this.clientRepository.findOneBy({
-        id: createAnamnesisFormDto.clientId,
+      anamnesisForm = await this.anamnesisFormRepository.findOne({
+        where: { client: { id: clientId } },
+        relations: ['client'],
       });
-
-      if (!client) {
-        throw new NotFoundException('Client not found');
+  
+      if (!anamnesisForm) {
+        throw new NotFoundException('Anamnesis form not found for the client');
       }
+  
+      Object.assign(anamnesisForm, createAnamnesisFormDto);
+
+      await this.anamnesisFormRepository.save(anamnesisForm);
     } catch (error) {
       throw new InternalServerErrorException(
-        `Error retrieving client: ${error.message}`,
+        `Error updating anamnesis form: ${error.message}`,
       );
     }
-
-    const newAnamnesisForm = this.anamnesisFormRepository.create(
-      createAnamnesisFormDto,
-    );
-
-    client.anamnesisForm = newAnamnesisForm;
-
-    try {
-      await this.anamnesisFormRepository.save(newAnamnesisForm);
-    } catch (error) {
-      throw new InternalServerErrorException(
-        `Error saving anamnesis form: ${error.message}`,
-      );
-    }
-
-    try {
-      await this.clientRepository.save(client);
-    } catch (error) {
-      throw new InternalServerErrorException(
-        `Error updating client with anamnesis form: ${error.message}`,
-      );
-    }
-
-    return newAnamnesisForm;
+  
+    return anamnesisForm;
   }
 
   public async getAllClients(paginationQueryDto: PaginationQueryDto) {
