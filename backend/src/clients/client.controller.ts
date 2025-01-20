@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { CreateClientDto } from './dtos/create-client.dto';
 import { ClientService } from './providers/clients.service';
-import { CreateAnamnesisFormDto } from './dtos/create-anamnesis-form.dto';
+import { UpdateAnamnesisFormDto } from './dtos/update-anamnesis-form.dto';
 import { PaginationQueryDto } from 'src/shared/pagination/dtos/pagination-query.dto';
 import { SearchClientsByNameDto } from './dtos/search-clients-by-name.dto';
 
@@ -29,11 +29,11 @@ export class ClientController {
     return this.clientService.deleteClient(id);
   }
 
-  @Post('anamnesis-form')
+  @Patch('anamnesis-form')
   public createAnamnesisForm(
-    @Body() createAnamnesisFormDto: CreateAnamnesisFormDto,
+    @Body() updateAnamnesisFormDto: Partial<UpdateAnamnesisFormDto>,
   ) {
-    return this.clientService.createAnamnesisForm(createAnamnesisFormDto);
+    return this.clientService.updateAnamnesisForm(updateAnamnesisFormDto);
   }
 
   @Get('anamnesis-form')
