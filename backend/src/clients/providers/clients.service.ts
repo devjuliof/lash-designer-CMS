@@ -151,7 +151,6 @@ export class ClientService {
     try {
       client = await this.clientRepository.findOneBy({ id });
 
-      console.log(client)
       if (!client) {
         throw new BadRequestException(`Client with ID ${id} not found.`);
       }
@@ -167,7 +166,7 @@ export class ClientService {
 
     try {
       const result = await this.clientRepository.update({ id }, newClientData);
-    console.log(result)
+      
       if (result.affected === 0) {
         throw new NotFoundException(`Client with ID ${id} not found`);
       }
