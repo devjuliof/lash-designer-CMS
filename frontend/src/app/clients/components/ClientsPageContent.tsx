@@ -48,18 +48,22 @@ export default function ClientsPageContent({ initialClients }: { initialClients:
     router.push(`/clients/profile/${id}`);
   }
 
+  function handleFormClick(id: number) {
+    router.push(`/clients/anamnesis-form/${id}`);
+  }
+
   return (
     <div className="relative min-h-screen flex flex-col">
       <div
         className={`transition-opacity duration-500 ease-in-out ${isFocused ? "opacity-0 pointer-events-none" : "opacity-100"
-          }`}
+        }`}
       >
         <MenuMobile />
       </div>
 
       <div
         className={`transition-transform duration-500 ease-in-out ${isFocused ? "translate-y-[-2.5rem]" : ""
-          } flex-grow`}
+        } flex-grow`}
       >
         <div className="flex gap-4 px-2 items-center">
           <SearchInput
@@ -76,7 +80,7 @@ export default function ClientsPageContent({ initialClients }: { initialClients:
             <ClientProfile
               key={client.id}
               name={client.name}
-              onClickForm={() => { }}
+              onClickForm={() => handleFormClick(client.id)}
               onClickProfile={() => handleProfileClick(client.id)}
               onClickTrash={() => deleteClient(client.id)}
             />

@@ -16,8 +16,8 @@ export const IsLoggedProvider: React.FC<IsLoggedProviderProps> = ({children}) =>
   const [isLogged, setIsLogged] = React.useState(false)
 
   return (
-  <IsLoggedContext.Provider value={{isLogged, setIsLogged}}>
-    {children}
-  </IsLoggedContext.Provider>
+    <IsLoggedContext.Provider value={{isLogged, setIsLogged}}>
+      {children}
+    </IsLoggedContext.Provider>
   );
 }

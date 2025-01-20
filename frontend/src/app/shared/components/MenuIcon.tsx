@@ -10,11 +10,11 @@ type MenuIconProps = {
 export default function MenuIcon({onClick}: MenuIconProps) {
   return (
     <div className="inline-block p-2 cursor-pointer" onClick={onClick}>
-        <Image
-          width={24}
-          src={menuIcon}
-          alt="Menu icon"
-        />
+      <Image
+        width={24}
+        src={menuIcon}
+        alt="Menu icon"
+      />
     </div>
   );
 }
