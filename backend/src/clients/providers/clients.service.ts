@@ -154,19 +154,22 @@ export class ClientService {
       if (!client) {
         throw new BadRequestException(`Client with ID ${id} not found.`);
       }
-    } catch(error) {
+    } catch (error) {
       throw new Error(`Unable to find the client: ${error.message}`);
     }
-    
+
     return client;
   }
 
-  public async updateClientById(id: number, newClientData: Partial<CreateClientDto>) {
+  public async updateClientById(
+    id: number,
+    newClientData: Partial<CreateClientDto>,
+  ) {
     newClientData = this.clientRepository.create(newClientData);
 
     try {
       const result = await this.clientRepository.update({ id }, newClientData);
-      
+
       if (result.affected === 0) {
         throw new NotFoundException(`Client with ID ${id} not found`);
       }
@@ -175,5 +178,29 @@ export class ClientService {
     }
 
     return { updated: true };
+  }
+
+  public async getClientAnamnesisFormByClientId(clientId: number) {
+    let anamnesisForm = undefined;
+
+    try {
+      anamnesisForm = await this.anamnesisFormRepository.findOne({
+        where: {
+          client: { id: clientId },
+        },
+      });
+
+      if (!anamnesisForm) {
+        throw new NotFoundException(
+          `Client with Id ${clientId} does not have a form`,
+        );
+      }
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+    }
+
+    return anamnesisForm;
   }
 }
