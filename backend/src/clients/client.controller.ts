@@ -36,6 +36,13 @@ export class ClientController {
     return this.clientService.createAnamnesisForm(createAnamnesisFormDto);
   }
 
+  @Get('anamnesis-form')
+  public async getClientAnamnesisFormByClientId(
+    @Query('clientId', ParseIntPipe) clientId: number,
+  ) {
+    return this.clientService.getClientAnamnesisFormByClientId(clientId);
+  }
+
   @Get()
   public getAllClients(@Query() paginationQueryDto: PaginationQueryDto) {
     return this.clientService.getAllClients(paginationQueryDto);
@@ -60,7 +67,7 @@ export class ClientController {
   @Patch(':id')
   public async updateClientById(
     @Param('id') id: number,
-    @Body() newClientData: Partial<CreateClientDto>
+    @Body() newClientData: Partial<CreateClientDto>,
   ) {
     return this.clientService.updateClientById(id, newClientData);
   }
