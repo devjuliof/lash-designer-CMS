@@ -49,4 +49,11 @@ export class ClientsService {
 
     return response;
   }
+
+  public static async getClientAnamnesisFormByClientId(id: number) {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/anamnesis-form?clientId=${id}`)
+      .then(res => res.json());
+      
+    return response;
+  }
 }
