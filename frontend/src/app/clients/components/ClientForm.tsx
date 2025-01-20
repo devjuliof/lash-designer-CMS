@@ -15,7 +15,7 @@ enum InputType {
 
 export default function ClientForm({ originalClient }: { originalClient: ClientData }) {
   const [client, setClient] = React.useState<ClientData>(originalClient);
-  const [isDirty, setIsDirty] = React.useState<boolean>(false);
+  const [isDirty, setIsDirty] = React.useState<boolean>(true);
 
   function handleInputChange(e: ChangeEvent<HTMLInputElement>, inputType: InputType) {
     let key = '';
