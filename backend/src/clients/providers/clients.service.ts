@@ -14,6 +14,7 @@ import { AnamnesisForm } from '../entities/anamnesis-form.entity';
 import { PaginationQueryDto } from 'src/shared/pagination/dtos/pagination-query.dto';
 import { PaginationProvider } from 'src/shared/pagination/providers/pagination.provider';
 import { SearchClientsByNameDto } from '../dtos/search-clients-by-name.dto';
+import { getPropertyType, validateQuestions } from '../utils/utils';
 
 @Injectable()
 export class ClientService {
@@ -77,19 +78,19 @@ export class ClientService {
   public async updateAnamnesisForm(
     createAnamnesisFormDto: Partial<UpdateAnamnesisFormDto>,
   ) {
-    let clientId = createAnamnesisFormDto.clientId;
+    const clientId = createAnamnesisFormDto.clientId;
     let anamnesisForm = undefined;
-  
+
     try {
       anamnesisForm = await this.anamnesisFormRepository.findOne({
         where: { client: { id: clientId } },
         relations: ['client'],
       });
-  
+
       if (!anamnesisForm) {
         throw new NotFoundException('Anamnesis form not found for the client');
       }
-  
+
       Object.assign(anamnesisForm, createAnamnesisFormDto);
 
       await this.anamnesisFormRepository.save(anamnesisForm);
@@ -98,7 +99,7 @@ export class ClientService {
         `Error updating anamnesis form: ${error.message}`,
       );
     }
-  
+
     return anamnesisForm;
   }
 
@@ -187,6 +188,54 @@ export class ClientService {
       }
     }
 
-    return anamnesisForm;
+    validateQuestions(UpdateAnamnesisFormDto.prototype);
+
+    delete anamnesisForm.id;
+
+    // Obter as propriedades decoradas
+    const decoratedQuestions = Reflect.getMetadata(
+      'questions',
+      UpdateAnamnesisFormDto.prototype,
+    );
+
+    // Mapeando as perguntas decoradas com o tipo do DTO
+    const response = decoratedQuestions.map((q, index) => {
+      const questionType = getPropertyType(
+        UpdateAnamnesisFormDto.prototype,
+        q.propertyKey,
+      ); // Usar o tipo refletido
+
+      return {
+        id: index + 1,
+        question: q.questionDescription,
+        type: questionType, // Usando o tipo do DTO
+        value: anamnesisForm[q.propertyKey],
+      };
+    });
+
+    return response;
   }
+
+  /**
+   * [
+   *  {
+   *    "id": 1,
+   *    "pergunta": fsdja jdsa?,
+   *    "type": "text",
+   *    "value": "jsda",
+   *  },
+   *  {
+   *    "id": 2,
+   *    "pergunta": fsdja jdsa?,
+   *    "type": "boolean",
+   *    "value": true,
+   *  },
+   *  {
+   *    "id": 3,
+   *    "pergunta": fsdja jdsa?,
+   *    "type": "number",
+   *    "value": "2",
+   *  },
+   * ]
+   */
 }
