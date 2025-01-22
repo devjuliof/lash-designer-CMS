@@ -10,9 +10,9 @@ export default async function AnamnesisFormPage({ params }: AnamnesisFormPagePro
   const { id } = await params;
   const clientId = Number(id);
 
-  const formData = await ClientsService.getClientAnamnesisFormByClientId(clientId);
+  const questionsData = await ClientsService.getClientAnamnesisFormByClientId(clientId);
 
   return (
-    <AnamnesisFormPageContent questionsData={formData}/>
+    <AnamnesisFormPageContent questionsData={questionsData}/>
   );
 }
