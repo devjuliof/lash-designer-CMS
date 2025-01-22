@@ -14,7 +14,8 @@ import { AnamnesisForm } from '../entities/anamnesis-form.entity';
 import { PaginationQueryDto } from 'src/shared/pagination/dtos/pagination-query.dto';
 import { PaginationProvider } from 'src/shared/pagination/providers/pagination.provider';
 import { SearchClientsByNameDto } from '../dtos/search-clients-by-name.dto';
-import { getPropertyType, validateQuestions } from '../utils/utils';
+import { getPropertyType } from '../utils/utils';
+import { DecoratedQuestions } from '../interfaces/interfaces';
 
 @Injectable()
 export class ClientService {
@@ -188,27 +189,24 @@ export class ClientService {
       }
     }
 
-    validateQuestions(UpdateAnamnesisFormDto.prototype);
-
     delete anamnesisForm.id;
 
-    // Obter as propriedades decoradas
-    const decoratedQuestions = Reflect.getMetadata(
+    const decoratedQuestions: DecoratedQuestions[] = Reflect.getMetadata(
       'questions',
       UpdateAnamnesisFormDto.prototype,
     );
 
-    // Mapeando as perguntas decoradas com o tipo do DTO
     const response = decoratedQuestions.map((q, index) => {
       const questionType = getPropertyType(
         UpdateAnamnesisFormDto.prototype,
         q.propertyKey,
-      ); // Usar o tipo refletido
+      );
 
       return {
         id: index + 1,
-        question: q.questionDescription,
-        type: questionType, // Usando o tipo do DTO
+        questionPropertie: q.propertyKey,
+        questionDescription: q.questionDescription,
+        type: questionType,
         value: anamnesisForm[q.propertyKey],
       };
     });
