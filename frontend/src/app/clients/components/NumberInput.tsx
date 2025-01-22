@@ -3,13 +3,14 @@ import Input from "@/app/shared/components/Input";
 interface NumberInputProps {
   text: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
+  value: number | undefined;
 }
 
-export default function NumberInput({ text, onChange }: NumberInputProps) {
+export default function NumberInput({ text, onChange, value }: NumberInputProps) {
   return (
     <>
       <label htmlFor={text}>{text}</label>
-      <Input onChange={onChange} type="number"/>
+      <Input value={value} onChange={onChange} type="number"/>
     </>
   );
 }
