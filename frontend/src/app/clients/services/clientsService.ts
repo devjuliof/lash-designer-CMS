@@ -1,3 +1,4 @@
+import { AnamnesisForm } from "../interfaces/anamnesis-form.interface";
 import { ClientData } from "../interfaces/client-data.interface";
 
 export class ClientsService {
@@ -54,6 +55,21 @@ export class ClientsService {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/anamnesis-form?clientId=${id}`)
       .then(res => res.json());
       
+    return response;
+  }
+
+  public static async updateAnamnesisFormByClientId(newForm: AnamnesisForm, id: number) {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clients/anamnesis-form`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        clientId: id,
+        ...newForm
+      }),
+    }).then(res => res.json());
+
     return response;
   }
 }
